@@ -1,0 +1,14 @@
+{
+  "name": "gnosis-siwe-jk",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "lint": "wsrun lint",
+    "dev": "wsrun dev"
+  },
+  "devDependencies": {
+    "wsrun": "^5.2.4"
+  }
+}

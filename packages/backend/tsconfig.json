@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
+    "outDir": "build",
+    "strict": true,
+    "target": "ESNext",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    },
+    "baseUrl": "."
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "src/**/*.ts"
+  ]
+}
