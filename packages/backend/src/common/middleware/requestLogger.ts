@@ -4,7 +4,6 @@ import { IncomingMessage, ServerResponse } from 'http';
 import { getReasonPhrase, StatusCodes } from 'http-status-codes';
 import { LevelWithSilent } from 'pino';
 import { CustomAttributeKeys, Options, pinoHttp } from 'pino-http';
-
 import { env } from '@/common/utils/env.js';
 
 enum LogLevel {
@@ -54,15 +53,16 @@ const customProps = (req: Request, res: Response): PinoCustomProps => ({
 });
 
 const responseBodyMiddleware: RequestHandler = (_req, res, next) => {
-  const isNotProduction = !env.isProduction;
-  if (isNotProduction) {
-    const originalSend = res.send;
-    res.send = function (content) {
-      res.locals.responseBody = content;
-      res.send = originalSend;
-      return originalSend.call(res, content);
-    };
+  if (!env.isProduction) {
+    next();
+    return;
   }
+  const originalSend = res.send;
+  res.send = function (content) {
+    res.locals.responseBody = content;
+    res.send = originalSend;
+    return originalSend.call(res, content);
+  };
   next();
 };
 
@@ -75,7 +75,7 @@ const customLogLevel = (_req: IncomingMessage, res: ServerResponse<IncomingMessa
 
 const customSuccessMessage = (req: IncomingMessage, res: ServerResponse<IncomingMessage>) => {
   if (res.statusCode === StatusCodes.NOT_FOUND) return getReasonPhrase(StatusCodes.NOT_FOUND);
-  return `${req.method} completed`;
+  return `completed ${req.method} ${req.url}`;
 };
 
 const genReqId = (req: IncomingMessage, res: ServerResponse<IncomingMessage>) => {

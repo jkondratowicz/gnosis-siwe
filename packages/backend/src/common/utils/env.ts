@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv';
-import { cleanEnv, host, port, str } from 'envalid';
+import { bool, cleanEnv, host, port, str } from 'envalid';
 
 dotenv.config();
 
@@ -8,4 +8,6 @@ export const env = cleanEnv(process.env, {
   HOST: host({ default: 'localhost' }),
   PORT: port({ default: 5000 }),
   CORS_ORIGIN: str({ default: 'http://localhost:5173' }),
+  DATABASE_URL: str(),
+  DEBUG_SQL_QUERIES: bool({ default: false }),
 });

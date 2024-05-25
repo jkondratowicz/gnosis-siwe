@@ -6,9 +6,11 @@
   ],
   "scripts": {
     "lint": "wsrun lint",
-    "dev": "wsrun dev"
+    "dev": "wsrun dev",
+    "setup": "docker compose -p gnosis-siwe up -d && yarn workspace backend setup"
   },
   "devDependencies": {
     "wsrun": "^5.2.4"
-  }
+  },
+  "packageManager": "yarn@4.2.2"
 }
