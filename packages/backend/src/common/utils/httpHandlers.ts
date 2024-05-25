@@ -7,6 +7,10 @@ export const handleServiceResponse = (serviceResponse: ServiceResponse<any>, res
   return response.status(serviceResponse.statusCode).send(serviceResponse);
 };
 
+export const errorResponse = (code: number, message: string, response: Response) => {
+  return response.status(code).send(new ServiceResponse({ status: ResponseStatus.Failed, message, statusCode: code }));
+};
+
 export const validateRequest = (schema: ZodSchema) => (req: Request, res: Response, next: NextFunction) => {
   try {
     schema.parse({ body: req.body, query: req.query, params: req.params });
@@ -14,6 +18,13 @@ export const validateRequest = (schema: ZodSchema) => (req: Request, res: Respon
   } catch (err) {
     const errorMessage = `Invalid input: ${(err as ZodError).errors.map((e) => e.message).join(', ')}`;
     const statusCode = StatusCodes.BAD_REQUEST;
-    res.status(statusCode).send(new ServiceResponse<null>(ResponseStatus.Failed, errorMessage, null, statusCode));
+    res.status(statusCode).send(
+      new ServiceResponse({
+        status: ResponseStatus.Failed,
+        message: errorMessage,
+        data: err,
+        statusCode,
+      }),
+    );
   }
 };
