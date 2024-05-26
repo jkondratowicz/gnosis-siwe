@@ -5,7 +5,7 @@ export type Generated<T> =
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
-export interface Profiles {
+export interface Profile {
   bio: string;
   createdAt: Generated<Timestamp>;
   externalId: string;
@@ -19,6 +19,6 @@ export interface SchemaMigrations {
 }
 
 export interface DB {
-  profiles: Profiles;
+  profile: Profile;
   schemaMigrations: SchemaMigrations;
 }
