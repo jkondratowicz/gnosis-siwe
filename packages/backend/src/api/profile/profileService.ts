@@ -21,4 +21,50 @@ export const profileService = {
       });
     }
   },
+
+  createProfile: async ({
+    address,
+    username,
+    bio,
+  }: {
+    address: string;
+    username: string;
+    bio: string;
+  }): Promise<ServiceResponse<number>> => {
+    try {
+      const response = await profileRepository.createProfile({ address, username, bio });
+      return new ServiceResponse({ data: response.length });
+    } catch (ex) {
+      const errorMessage = `Error creating the profile: $${(ex as Error).message}`;
+      logger.error(errorMessage);
+      return new ServiceResponse({
+        status: ResponseStatus.Failed,
+        message: errorMessage,
+        statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+      });
+    }
+  },
+
+  updateProfile: async ({
+    address,
+    username,
+    bio,
+  }: {
+    address: string;
+    username: string;
+    bio: string;
+  }): Promise<ServiceResponse<bigint>> => {
+    try {
+      const response = await profileRepository.updateProfile(address, { username, bio });
+      return new ServiceResponse({ data: response.numUpdatedRows.valueOf() });
+    } catch (ex) {
+      const errorMessage = `Error updating the profile: $${(ex as Error).message}`;
+      logger.error(errorMessage);
+      return new ServiceResponse({
+        status: ResponseStatus.Failed,
+        message: errorMessage,
+        statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+      });
+    }
+  },
 };

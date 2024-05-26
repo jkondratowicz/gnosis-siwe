@@ -14,8 +14,8 @@ export const app: Express = express();
 
 app.set('trust proxy', true);
 
-app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
 app.use(helmet());
+app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
 app.use(sessionMiddleware());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

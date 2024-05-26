@@ -1,6 +1,9 @@
 import Session from 'express-session';
 import { env } from '@/common/utils/env.js';
 import { SiweMessage } from 'siwe';
+import sessionStore from 'session-file-store';
+
+const FileStore = sessionStore(Session);
 
 declare module 'express-session' {
   interface SessionData {
@@ -16,4 +19,5 @@ export const sessionMiddleware = () =>
     resave: true,
     saveUninitialized: true,
     cookie: { secure: false, sameSite: true },
+    store: new FileStore(),
   });
