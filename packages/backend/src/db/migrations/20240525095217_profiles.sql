@@ -10,5 +10,15 @@ CREATE TABLE profile(
 
 CREATE UNIQUE INDEX profile_external_id_unique ON profile (external_id);
 
+CREATE OR REPLACE FUNCTION profile_update_modified_column()
+RETURNS TRIGGER AS $$
+BEGIN
+NEW.updated_at = now();
+RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+CREATE TRIGGER profile_update_modified_time BEFORE UPDATE ON profile FOR EACH ROW EXECUTE PROCEDURE profile_update_modified_column();
+
 -- migrate:down
-DROP TABLE profiles;
+DROP TABLE profile;
