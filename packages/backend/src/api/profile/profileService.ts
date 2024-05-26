@@ -32,6 +32,15 @@ export const profileService = {
     bio: string;
   }): Promise<ServiceResponse<number>> => {
     try {
+      const existingProfile = await profileRepository.getProfile(address);
+      if (existingProfile) {
+        return new ServiceResponse({
+          status: ResponseStatus.Failed,
+          message: 'Profile already exists',
+          statusCode: StatusCodes.BAD_REQUEST,
+        });
+      }
+
       const response = await profileRepository.createProfile({ address, username, bio });
       return new ServiceResponse({ data: response.length });
     } catch (ex) {
@@ -53,10 +62,19 @@ export const profileService = {
     address: string;
     username: string;
     bio: string;
-  }): Promise<ServiceResponse<bigint>> => {
+  }): Promise<ServiceResponse<number>> => {
     try {
+      const existingProfile = await profileRepository.getProfile(address);
+      if (!existingProfile) {
+        return new ServiceResponse({
+          status: ResponseStatus.Failed,
+          message: 'Profile does not exists yet',
+          statusCode: StatusCodes.NOT_FOUND,
+        });
+      }
+
       const response = await profileRepository.updateProfile(address, { username, bio });
-      return new ServiceResponse({ data: response.numUpdatedRows.valueOf() });
+      return new ServiceResponse({ data: Number(response.numUpdatedRows) });
     } catch (ex) {
       const errorMessage = `Error updating the profile: $${(ex as Error).message}`;
       logger.error(errorMessage);
